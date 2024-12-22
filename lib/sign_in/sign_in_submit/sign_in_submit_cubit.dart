@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_very_good_demo/sign_in/sign_in_email/cubit/sign_in_email_cubit.dart';
-import 'package:flutter_very_good_demo/sign_in/sign_in_password/cubit/sign_in_password_cubit.dart';
+import 'package:flutter_very_good_demo/sign_in/common/text_field_cubit.dart';
+import 'package:flutter_very_good_demo/sign_in/sign_in_email/sign_in_email_text_field.dart';
+import 'package:flutter_very_good_demo/sign_in/sign_in_password/sign_in_password_text_field.dart';
 import 'package:rxdart/rxdart.dart';
 
 enum SignInSubmitStatus { invalid, valid, submitting, success, error }
@@ -27,12 +28,12 @@ class SignInSubmitCubit extends Cubit<SignInSubmitStatus> {
       );
     });
   }
-  final SignInEmailCubit emailCubit;
-  final SignInPasswordCubit passwordCubit;
+  final TextFieldCubit<SignInEmailTextFieldState> emailCubit;
+  final TextFieldCubit<SignInPasswordTextFieldState> passwordCubit;
   StreamSubscription<
       ({
-        ({String? email, String? error}) email,
-        ({String? error, String? password}) password
+        ({String? value, String? error}) email,
+        ({String? value, String? error}) password
       })>? _submitSubscription;
 
   void onSubmit() {

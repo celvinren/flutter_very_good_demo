@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_very_good_demo/sign_in/sign_in_email/sign_in_email.dart';
+import 'package:flutter_very_good_demo/sign_in/common/text_field_cubit.dart';
+import 'package:flutter_very_good_demo/sign_in/sign_in_email/sign_in_email_text_field.dart';
 import 'package:flutter_very_good_demo/sign_in/sign_in_loading/sign_in_loading.dart';
-import 'package:flutter_very_good_demo/sign_in/sign_in_password/cubit/sign_in_password_cubit.dart';
-import 'package:flutter_very_good_demo/sign_in/sign_in_password/view/sign_in_password_text_field.dart';
+import 'package:flutter_very_good_demo/sign_in/sign_in_password/sign_in_password_text_field.dart';
 import 'package:flutter_very_good_demo/sign_in/sign_in_submit/sign_in_submit_cubit.dart';
 
 class SignInPage extends HookWidget {
@@ -12,8 +12,18 @@ class SignInPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final emailCubit = useState(SignInEmailCubit());
-    final passwordCubit = useState(SignInPasswordCubit());
+    final emailCubit = useState(
+      TextFieldCubit<SignInEmailTextFieldState>(
+        validator: (value) => value.contains('@'),
+        action: 'email',
+      ),
+    );
+    final passwordCubit = useState(
+      TextFieldCubit<SignInPasswordTextFieldState>(
+        validator: (value) => value.length > 6,
+        action: 'password',
+      ),
+    );
     final submitCubit = useState(
       SignInSubmitCubit(
         emailCubit: emailCubit.value,
@@ -22,8 +32,12 @@ class SignInPage extends HookWidget {
     );
     return MultiBlocProvider(
       providers: [
-        BlocProvider<SignInEmailCubit>(create: (_) => emailCubit.value),
-        BlocProvider<SignInPasswordCubit>(create: (_) => passwordCubit.value),
+        BlocProvider<TextFieldCubit<SignInEmailTextFieldState>>(
+          create: (_) => emailCubit.value,
+        ),
+        BlocProvider<TextFieldCubit<SignInPasswordTextFieldState>>(
+          create: (_) => passwordCubit.value,
+        ),
         BlocProvider<SignInSubmitCubit>(
           create: (_) => submitCubit.value,
         ),
