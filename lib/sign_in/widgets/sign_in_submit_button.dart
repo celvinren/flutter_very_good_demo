@@ -1,19 +1,12 @@
-import 'dart:async';
+part of '../sign_in_page.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_very_good_demo/sign_in/common/text_field_cubit.dart';
-import 'package:flutter_very_good_demo/sign_in/sign_in_email/sign_in_email_text_field.dart';
-import 'package:flutter_very_good_demo/sign_in/sign_in_password/sign_in_password_text_field.dart';
-import 'package:rxdart/rxdart.dart';
+enum _SignInSubmitStatus { invalid, valid, submitting, success, error }
 
-enum SignInSubmitStatus { invalid, valid, submitting, success, error }
-
-class SignInSubmitCubit extends Cubit<SignInSubmitStatus> {
-  SignInSubmitCubit({
+class _SignInSubmitCubit extends Cubit<_SignInSubmitStatus> {
+  _SignInSubmitCubit({
     required this.emailCubit,
     required this.passwordCubit,
-  }) : super(SignInSubmitStatus.invalid) {
+  }) : super(_SignInSubmitStatus.invalid) {
     _submitSubscription = CombineLatestStream.combine2(
       emailCubit.stream,
       passwordCubit.stream,
@@ -23,13 +16,13 @@ class SignInSubmitCubit extends Cubit<SignInSubmitStatus> {
       final password = event.password;
       emit(
         email.error != null || password.error != null
-            ? SignInSubmitStatus.invalid
-            : SignInSubmitStatus.valid,
+            ? _SignInSubmitStatus.invalid
+            : _SignInSubmitStatus.valid,
       );
     });
   }
-  final TextFieldCubit<SignInEmailTextFieldState> emailCubit;
-  final TextFieldCubit<SignInPasswordTextFieldState> passwordCubit;
+  final TextFieldCubit<_SignInEmailTextFieldState> emailCubit;
+  final TextFieldCubit<_SignInPasswordTextFieldState> passwordCubit;
   StreamSubscription<
       ({
         ({String? value, String? error}) email,
@@ -37,9 +30,9 @@ class SignInSubmitCubit extends Cubit<SignInSubmitStatus> {
       })>? _submitSubscription;
 
   void onSubmit() {
-    emit(SignInSubmitStatus.submitting);
+    emit(_SignInSubmitStatus.submitting);
     Future.delayed(const Duration(seconds: 2), () {
-      emit(SignInSubmitStatus.error);
+      emit(_SignInSubmitStatus.error);
     });
   }
 
@@ -50,14 +43,14 @@ class SignInSubmitCubit extends Cubit<SignInSubmitStatus> {
   }
 }
 
-class SignInSubmitButton extends StatelessWidget {
-  const SignInSubmitButton({super.key});
+class _SignInSubmitButton extends StatelessWidget {
+  const _SignInSubmitButton();
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<SignInSubmitCubit, SignInSubmitStatus>(
+    return BlocConsumer<_SignInSubmitCubit, _SignInSubmitStatus>(
       listener: (context, state) {
-        if (state == SignInSubmitStatus.error) {
+        if (state == _SignInSubmitStatus.error) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
@@ -68,8 +61,8 @@ class SignInSubmitButton extends StatelessWidget {
       builder: (context, state) {
         return ElevatedButton(
           onPressed: switch (state) {
-            SignInSubmitStatus.invalid => null,
-            _ => context.read<SignInSubmitCubit>().onSubmit
+            _SignInSubmitStatus.invalid => null,
+            _ => context.read<_SignInSubmitCubit>().onSubmit
           },
           child: const Text('Submit'),
         );
