@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_very_good_demo/counter/counter.dart';
 import 'package:flutter_very_good_demo/l10n/l10n.dart';
+import 'package:flutter_very_good_demo/sign_in/sign_in_page.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -16,7 +16,7 @@ class App extends StatelessWidget {
       ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const CounterPage(),
+      home: const SignInPage(),
     );
   }
 }
